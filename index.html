@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRENDLINE — Dubai's Premier Fashion House</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;600;700;900&family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════ VARIABLES ═══════════════════════════════ */
+:root {
+  --gold: #D4AF37;
+  --gold-light: #FFD700;
+  --gold-soft: #ffcc66;
+  --gold-dark: #B8860B;
+  --gold-dim: rgba(212,175,55,0.15);
+  --black: #000000;
+  --black-rich: #050505;
+  --black-matte: #0b0b0b;
+  --black-surface: #111;
+  --white: #ffffff;
+  --white-off: #f5f0e8;
+  --gray: rgba(255,255,255,0.45);
+  --gray-dim: rgba(255,255,255,0.2);
+  --glow: 0 0 40px rgba(212,175,55,0.3), 0 0 80px rgba(212,175,55,0.1);
+  --glow-soft: 0 0 20px rgba(212,175,55,0.2);
+  --glass: rgba(212,175,55,0.03);
+  --glass-border: rgba(212,175,55,0.12);
+  --glass-border-hover: rgba(212,175,55,0.35);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --display: 'Bebas Neue', sans-serif;
+  --body: 'Montserrat', sans-serif;
+  --elegant: 'Playfair Display', Georgia, serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--body);
+  overflow-x: hidden;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════ CURSOR ═══════════════════════════════ */
+#cur { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:99999; transform:translate(-50%,-50%); transition:width .2s,height .2s,background .2s; mix-blend-mode:normal; box-shadow:0 0 12px var(--gold); }
+#cur-ring { position:fixed; width:36px; height:36px; border:1px solid rgba(212,175,55,.4); border-radius:50%; pointer-events:none; z-index:99998; transform:translate(-50%,-50%); transition:all .15s ease; }
+body.hovering #cur { width:14px; height:14px; }
+body.hovering #cur-ring { width:52px; height:52px; border-color:var(--gold); }
+
+/* ═══════════════════════════════ LOADER ═══════════════════════════════ */
+#loader {
+  position:fixed; inset:0; z-index:99990;
+  background:#000;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px;
+  transition: opacity .9s ease, visibility .9s ease;
+}
+#loader.gone { opacity:0; visibility:hidden; pointer-events:none; }
+.ld-logo {
+  font-family: var(--serif);
+  font-size: 3.2rem;
+  font-weight: 300;
+  letter-spacing: 18px;
+  color: var(--gold);
+  text-transform: uppercase;
+  animation: ldPulse 2s ease-in-out infinite;
+}
+@keyframes ldPulse { 0%,100%{opacity:.7} 50%{opacity:1;filter:drop-shadow(0 0 16px rgba(212,175,55,.5))} }
+.ld-sub { font-size:.55rem; letter-spacing:8px; color:rgba(212,175,55,.45); text-transform:uppercase; font-weight:300; }
+.ld-bar-wrap { width:220px; height:1px; background:rgba(212,175,55,.1); position:relative; overflow:hidden; }
+.ld-bar { height:100%; background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-soft)); width:0%; animation:ldBar 2.6s cubic-bezier(.4,0,.2,1) forwards; box-shadow:0 0 8px var(--gold); }
+@keyframes ldBar { to { width:100%; } }
+
+/* ═══════════════════════════════ PARTICLES CANVAS ═══════════════════════════════ */
+#pCanvas { position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.5; }
+
+/* ═══════════════════════════════ NAVBAR ═══════════════════════════════ */
+nav {
+  position:fixed; top:20px; left:50%; transform:translateX(-50%);
+  z-index:1000;
+  width:min(1100px,96vw);
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(24px) saturate(1.4);
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid var(--glass-border);
+  border-radius:4px;
+  padding:0 40px;
+  display:flex; align-items:center; justify-content:space-between; height:68px;
+  transition:all .4s;
+}
+nav.dense { background:rgba(0,0,0,.88); top:0; border-radius:0; border-left:none; border-right:none; border-top:none; }
+
+.nav-brand {
+  font-family: var(--serif);
+  font-size:1.5rem; font-weight:300; letter-spacing:10px;
+  text-transform:uppercase;
+  color:var(--gold);
+  text-decoration:none;
+  flex-shrink:0;
+}
+.nav-brand span { font-weight:600; }
+
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  color:rgba(255,255,255,.55); text-decoration:none;
+  font-size:.62rem; letter-spacing:3px; text-transform:uppercase; font-weight:600;
+  position:relative; transition:color .3s;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-3px; left:0;
+  width:0; height:1px; background:var(--gold);
+  transition:width .35s ease; box-shadow:0 0 6px var(--gold);
+}
+.nav-links a:hover { color:var(--gold); }
+.nav-links a:hover::after { width:100%; }
+
+.nav-actions { display:flex; gap:16px; align-items:center; }
+.nav-btn {
+  font-size:.58rem; letter-spacing:2.5px; text-transform:uppercase; font-weight:700;
+  padding:10px 24px; border-radius:2px;
+  border:1px solid rgba(212,175,55,.4);
+  color:var(--gold); background:transparent;
+  text-decoration:none; transition:all .3s; cursor:none;
+}
+.nav-btn:hover { background:var(--gold); color:#000; box-shadow:var(--glow-soft); }
+.nav-btn.filled { background:linear-gradient(135deg,var(--gold-dark),var(--gold)); color:#000; border-color:transparent; }
+.nav-btn.filled:hover { box-shadow:var(--glow); transform:translateY(-2px); }
+
+.hamburger { display:none; flex-direction:column; gap:6px; cursor:none; padding:4px; }
+.hamburger span { display:block; width:26px; height:1.5px; background:var(--gold); transition:all .35s; box-shadow:0 0 4px rgba(212,175,55,.5); }
+
+/* ═══════════════════════════════ MOBILE MENU ═══════════════════════════════ */
+#mMen {
+  display:none; position:fixed; inset:0; z-index:990;
+  background:rgba(0,0,0,.97);
+  flex-direction:column; align-items:center; justify-content:center; gap:36px;
+  backdrop-filter:blur(20px);
+}
+#mMen.show { display:flex; }
+#mMen a {
+  font-family:var(--serif); font-size:2rem; font-weight:300;
+  letter-spacing:8px; text-transform:uppercase;
+  color:rgba(255,255,255,.7); text-decoration:none;
+  transition:all .3s;
+}
+#mMen a:hover { color:var(--gold); letter-spacing:12px; }
+.m-close { position:absolute; top:28px; right:28px; font-size:1.5rem; color:var(--gold); cursor:none; }
+
+/* ═══════════════════════════════ REVEAL ═══════════════════════════════ */
+.rv { opacity:0; transform:translateY(36px); transition:opacity .9s cubic-bezier(.4,0,.2,1), transform .9s cubic-bezier(.4,0,.2,1); }
+.rv.in { opacity:1; transform:none; }
+.rv-left { opacity:0; transform:translateX(-40px); transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1); }
+.rv-left.in { opacity:1; transform:none; }
+.rv-right { opacity:0; transform:translateX(40px); transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1); }
+.rv-right.in { opacity:1; transform:none; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
+
+/* ═══════════════════════════════ SECTION LABELS ═══════════════════════════════ */
+.sect-tag {
+  display:inline-flex; align-items:center; gap:14px;
+  font-size:.55rem; letter-spacing:6px; text-transform:uppercase;
+  color:var(--gold); font-weight:600; margin-bottom:18px;
+}
+.sect-tag::before,.sect-tag::after { content:''; display:block; width:30px; height:1px; background:var(--gold); opacity:.5; }
+.sect-tag.center { justify-content:center; display:flex; }
+
+.sect-title {
+  font-family:var(--elegant);
+  font-size:clamp(2.4rem,5.5vw,5rem);
+  font-weight:400; line-height:1.1;
+  color:var(--white-off); letter-spacing:1px;
+}
+.sect-title em { font-style:italic; color:var(--gold); }
+.sect-title strong {
+  display:block;
+  background:linear-gradient(135deg,#fff 20%,var(--gold-soft) 55%,var(--gold) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  font-weight:400;
+}
+
+.divider-gold { height:1px; background:linear-gradient(90deg,transparent,rgba(212,175,55,.2),transparent); margin:0 auto; max-width:1200px; }
+
+/* ═══════════════════════════════ HERO ═══════════════════════════════ */
+#hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:100px 24px 80px; text-align:center;
+  position:relative; overflow:hidden;
+}
+
+.hero-film {
+  position:absolute; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 30%, rgba(212,175,55,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 70%, rgba(184,134,11,.05) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 50% at 20% 60%, rgba(212,175,55,.04) 0%, transparent 60%);
+}
+.hero-grid-bg {
+  position:absolute; inset:0; z-index:0;
+  background-image:
+    linear-gradient(rgba(212,175,55,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,175,55,.025) 1px, transparent 1px);
+  background-size:80px 80px;
+  animation:gridDrift 25s linear infinite;
+  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black,transparent);
+}
+@keyframes gridDrift { 0%{background-position:0 0} 100%{background-position:80px 80px} }
+
+.hero-orb {
+  position:absolute; border-radius:50%; filter:blur(100px); pointer-events:none;
+  animation:orbDrift 10s ease-in-out infinite;
+}
+.hero-orb-1 { width:600px; height:400px; background:radial-gradient(circle,rgba(212,175,55,.1) 0%,transparent 70%); top:5%; left:50%; transform:translateX(-50%); animation-duration:12s; }
+.hero-orb-2 { width:350px; height:350px; background:radial-gradient(circle,rgba(184,134,11,.12) 0%,transparent 70%); bottom:10%; right:8%; animation-delay:-5s; }
+.hero-orb-3 { width:250px; height:250px; background:radial-gradient(circle,rgba(255,215,0,.07) 0%,transparent 70%); top:25%; left:4%; animation-delay:-3s; }
+@keyframes orbDrift { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-25px) scale(1.04)} }
+
+/* Animated shimmer lines */
+.hero-shimmer { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.shimmer-line {
+  position:absolute; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,.5),transparent);
+  animation:shimmerSlide 6s ease-in-out infinite;
+  opacity:0;
+}
+.shimmer-line:nth-child(1) { top:25%; width:60%; left:20%; animation-delay:0s; }
+.shimmer-line:nth-child(2) { top:50%; width:40%; left:30%; animation-delay:2s; }
+.shimmer-line:nth-child(3) { top:75%; width:50%; left:25%; animation-delay:4s; }
+@keyframes shimmerSlide {
+  0%{opacity:0;transform:translateX(-20px)} 30%{opacity:1} 70%{opacity:1} 100%{opacity:0;transform:translateX(20px)}
+}
+
+.hero-eye { position:absolute; top:0; left:0; right:0; bottom:0; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 50%, transparent 40%, rgba(0,0,0,.7) 100%); }
+
+.hero-content { position:relative; z-index:2; max-width:1000px; }
+
+.hero-pretag {
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:.55rem; letter-spacing:7px; text-transform:uppercase; font-weight:700;
+  color:rgba(212,175,55,.8); border:1px solid rgba(212,175,55,.2);
+  padding:8px 22px; border-radius:2px; margin-bottom:36px;
+  background:rgba(212,175,55,.04);
+  animation:fadeUp .8s 3s ease both;
+}
+.hero-dot { width:5px; height:5px; background:var(--gold); border-radius:50%; box-shadow:0 0 8px var(--gold); animation:dotBeat 1.5s ease-in-out infinite; }
+@keyframes dotBeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.6); opacity:.6} }
+
+.hero-h1 {
+  font-family: var(--serif);
+  font-size:clamp(3.5rem,11vw,9.5rem);
+  font-weight:300; line-height:.92; letter-spacing:6px;
+  text-transform:uppercase; margin-bottom:4px;
+  animation:fadeUp .9s 3.2s ease both;
+}
+.hero-h1 .line1 { display:block; color:var(--white-off); }
+.hero-h1 .line2 {
+  display:block; font-style:italic; font-weight:300;
+  background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 40%,var(--gold-soft) 70%,var(--gold) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(212,175,55,.35));
+  background-size:200% 200%; animation:goldShift 4s ease-in-out infinite alternate, fadeUp .9s 3.2s ease both;
+}
+@keyframes goldShift { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
+.hero-h1 .line3 { display:block; color:rgba(255,255,255,.15); letter-spacing:16px; font-size:.45em; font-weight:600; font-style:normal; margin-top:12px; }
+
+.hero-sub {
+  font-size:clamp(.8rem,1.4vw,1.05rem);
+  color:rgba(255,255,255,.4); max-width:560px;
+  line-height:2; font-weight:300; letter-spacing:.5px;
+  margin:28px auto 52px;
+  animation:fadeUp .9s 3.4s ease both;
+}
+
+.hero-ctas { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; animation:fadeUp .9s 3.6s ease both; }
+
+.cta-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-soft));
+  color:#000; padding:16px 44px; border-radius:2px;
+  font-size:.65rem; font-weight:700; letter-spacing:3.5px; text-transform:uppercase;
+  text-decoration:none; transition:all .35s; cursor:none; position:relative; overflow:hidden;
+}
+.cta-primary::before {
+  content:''; position:absolute; inset:0;
+  background:rgba(255,255,255,.18);
+  transform:translateX(-100%) skewX(-12deg);
+  transition:transform .55s;
+}
+.cta-primary:hover::before { transform:translateX(110%) skewX(-12deg); }
+.cta-primary:hover { box-shadow:0 8px 40px rgba(212,175,55,.5); transform:translateY(-3px); }
+
+.cta-secondary {
+  display:inline-flex; align-items:center; gap:10px;
+  color:var(--gold); padding:15px 44px; border-radius:2px;
+  font-size:.65rem; font-weight:700; letter-spacing:3.5px; text-transform:uppercase;
+  text-decoration:none; border:1px solid rgba(212,175,55,.35);
+  background:rgba(212,175,55,.03); transition:all .35s; cursor:none;
+}
+.cta-secondary:hover { background:rgba(212,175,55,.08); border-color:var(--gold); box-shadow:var(--glow-soft); transform:translateY(-3px); }
+
+.hero-scroll {
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  animation:fadeUp 1s 4s ease both;
+}
+.scroll-label { font-size:.52rem; letter-spacing:5px; text-transform:uppercase; color:rgba(212,175,55,.4); font-weight:600; }
+.scroll-stem { width:1px; height:55px; background:linear-gradient(to bottom,var(--gold),transparent); animation:stemPulse 2s ease-in-out infinite; }
+@keyframes stemPulse { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 50.001%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+/* ═══════════════════════════════ MARQUEE TICKER ═══════════════════════════════ */
+.marquee-strip {
+  background:linear-gradient(90deg,rgba(212,175,55,.06),rgba(212,175,55,.04),rgba(212,175,55,.06));
+  border-top:1px solid var(--glass-border); border-bottom:1px solid var(--glass-border);
+  padding:14px 0; overflow:hidden; position:relative; z-index:2;
+}
+.marquee-inner { display:flex; animation:marqueeRoll 30s linear infinite; width:max-content; }
+.marquee-inner span {
+  white-space:nowrap; padding:0 40px;
+  font-size:.6rem; letter-spacing:5px; text-transform:uppercase; font-weight:600;
+  color:rgba(212,175,55,.6);
+}
+.marquee-inner span.dot { color:var(--gold); padding:0; font-size:.8rem; }
+@keyframes marqueeRoll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ═══════════════════════════════ ABOUT ═══════════════════════════════ */
+#about {
+  padding:130px 24px; max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:100px; align-items:center;
+}
+.about-visual-wrap { position:relative; }
+.about-img-frame {
+  width:100%; aspect-ratio:3/4;
+  background:var(--black-surface);
+  border:1px solid var(--glass-border);
+  border-radius:2px; overflow:hidden; position:relative;
+}
+.about-img-inner {
+  position:absolute; inset:0;
+  background:
+    linear-gradient(135deg,rgba(212,175,55,.08) 0%,transparent 50%),
+    linear-gradient(to bottom,var(--black-matte),var(--black-surface));
+  display:flex; align-items:center; justify-content:center;
+}
+.about-fashion-svg { width:70%; opacity:.18; }
+.about-frame-corner {
+  position:absolute; width:28px; height:28px;
+  border-color:var(--gold); border-style:solid; border-width:0; opacity:.7;
+}
+.about-frame-corner.tl { top:12px; left:12px; border-top-width:1px; border-left-width:1px; }
+.about-frame-corner.tr { top:12px; right:12px; border-top-width:1px; border-right-width:1px; }
+.about-frame-corner.bl { bottom:12px; left:12px; border-bottom-width:1px; border-left-width:1px; }
+.about-frame-corner.br { bottom:12px; right:12px; border-bottom-width:1px; border-right-width:1px; }
+
+/* Animated scan line */
+.about-scan {
+  position:absolute; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,175,55,.4),transparent);
+  animation:scanDown 4s ease-in-out infinite;
+}
+@keyframes scanDown { 0%{top:0%;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%;opacity:0} }
+
+.about-float-badge {
+  position:absolute; background:rgba(0,0,0,.85);
+  border:1px solid var(--glass-border); border-radius:2px;
+  padding:16px 22px; backdrop-filter:blur(12px);
+}
+.about-float-badge:nth-child(3) { bottom:-20px; right:-30px; animation:floatBob 4s ease-in-out infinite; }
+.about-float-badge:nth-child(4) { top:40px; left:-30px; animation:floatBob 4s ease-in-out infinite; animation-delay:-2s; }
+@keyframes floatBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.badge-num { font-family:var(--elegant); font-size:1.8rem; color:var(--gold); font-weight:400; line-height:1; }
+.badge-lbl { font-size:.58rem; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.4); margin-top:4px; font-weight:600; }
+
+.about-text { display:flex; flex-direction:column; gap:22px; }
+.about-text p { font-size:.88rem; color:rgba(255,255,255,.45); line-height:2; font-weight:300; }
+.about-metrics { display:flex; gap:40px; margin-top:12px; padding:28px 0; border-top:1px solid var(--glass-border); border-bottom:1px solid var(--glass-border); }
+.am { display:flex; flex-direction:column; gap:4px; }
+.am-n { font-family:var(--display); font-size:2.8rem; letter-spacing:2px; color:var(--gold); line-height:1; }
+.am-l { font-size:.58rem; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.35); font-weight:600; }
+
+/* ═══════════════════════════════ COLLECTIONS ═══════════════════════════════ */
+#collections { padding:130px 24px; }
+.coll-header { text-align:center; max-width:700px; margin:0 auto 72px; }
+
+.coll-grid {
+  max-width:1300px; margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:2px;
+}
+.coll-card {
+  aspect-ratio:3/4;
+  position:relative; overflow:hidden; cursor:none;
+  background:var(--black-surface);
+}
+.coll-card.wide { grid-column:span 2; aspect-ratio:auto; }
+.coll-card-bg {
+  position:absolute; inset:0;
+  transition:transform .8s cubic-bezier(.4,0,.2,1);
+}
+.coll-card:hover .coll-card-bg { transform:scale(1.06); }
+
+/* Different gradient backgrounds for each card */
+.bg-mens { background:linear-gradient(160deg,#0a0a0a 0%,#1a1400 50%,#0f0c00 100%); }
+.bg-womens { background:linear-gradient(160deg,#050505 0%,#1a1000 60%,#0a0800 100%); }
+.bg-kids { background:linear-gradient(160deg,#080808 0%,#12100a 100%); }
+.bg-corp { background:linear-gradient(135deg,#050505 0%,#101010 100%); }
+.bg-med { background:linear-gradient(135deg,#060606 0%,#0e1010 100%); }
+.bg-school { background:linear-gradient(135deg,#070707 0%,#100e00 100%); }
+.bg-hosp { background:linear-gradient(135deg,#050505 0%,#0d0d0d 100%); }
+.bg-ind { background:linear-gradient(135deg,#030303 0%,#0f0c05 100%); }
+.bg-street { background:linear-gradient(135deg,#050505 0%,#0c0900 100%); }
+.bg-casual { background:linear-gradient(135deg,#060606 0%,#0e0c08 100%); }
+
+/* Geometric fashion shapes inside cards */
+.coll-art {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  opacity:.14; transition:opacity .5s;
+}
+.coll-card:hover .coll-art { opacity:.22; }
+
+.coll-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.3) 50%,transparent 100%);
+  transition:background .5s;
+}
+.coll-card:hover .coll-overlay { background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.1) 100%); }
+
+.coll-glow {
+  position:absolute; inset:0; opacity:0;
+  background:radial-gradient(ellipse at 50% 100%,rgba(212,175,55,.12),transparent 70%);
+  transition:opacity .5s;
+}
+.coll-card:hover .coll-glow { opacity:1; }
+
+.coll-border-anim {
+  position:absolute; inset:0; border:1px solid transparent;
+  transition:border-color .4s;
+}
+.coll-card:hover .coll-border-anim { border-color:rgba(212,175,55,.2); }
+
+.coll-info {
+  position:absolute; bottom:0; left:0; right:0; padding:28px 24px 24px;
+  transform:translateY(8px); transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.coll-card:hover .coll-info { transform:translateY(0); }
+.coll-cat { font-size:.52rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px; }
+.coll-name { font-family:var(--elegant); font-size:1.3rem; font-weight:400; color:var(--white-off); line-height:1.2; }
+.coll-action {
+  display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+  font-size:.55rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:700;
+  opacity:0; transform:translateY(8px); transition:opacity .35s .1s, transform .35s .1s;
+}
+.coll-card:hover .coll-action { opacity:1; transform:translateY(0); }
+.coll-action-arrow { font-size:.7rem; transition:transform .3s; }
+.coll-card:hover .coll-action-arrow { transform:translateX(4px); }
+
+/* ═══════════════════════════════ SERVICES / UNIFORMS ═══════════════════════════════ */
+#services { padding:130px 24px; }
+.serv-wrap { max-width:1200px; margin:0 auto; }
+.serv-header { text-align:center; max-width:640px; margin:0 auto 72px; }
+
+.serv-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.serv-card {
+  background:var(--glass);
+  border:1px solid var(--glass-border); border-radius:2px;
+  padding:44px 36px 36px; position:relative; overflow:hidden; cursor:none;
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+}
+.serv-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0; transition:opacity .4s;
+}
+.serv-card::after {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,.07),transparent 60%);
+  opacity:0; transition:opacity .4s;
+}
+.serv-card:hover { transform:translateY(-8px); border-color:var(--glass-border-hover); box-shadow:0 24px 60px rgba(0,0,0,.5),var(--glow-soft); }
+.serv-card:hover::before,.serv-card:hover::after { opacity:1; }
+
+.serv-icon {
+  width:52px; height:52px; margin-bottom:24px;
+  border:1px solid rgba(212,175,55,.15); border-radius:2px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; position:relative; z-index:1;
+  transition:border-color .4s, box-shadow .4s;
+}
+.serv-card:hover .serv-icon { border-color:rgba(212,175,55,.4); box-shadow:var(--glow-soft); }
+.serv-title { font-family:var(--elegant); font-size:1.2rem; font-weight:400; color:var(--white-off); margin-bottom:14px; position:relative; z-index:1; }
+.serv-desc { font-size:.8rem; color:rgba(255,255,255,.38); line-height:1.9; position:relative; z-index:1; font-weight:300; }
+.serv-num {
+  position:absolute; top:24px; right:28px;
+  font-family:var(--display); font-size:3.5rem; letter-spacing:2px;
+  color:rgba(212,175,55,.05); line-height:1; transition:color .4s;
+}
+.serv-card:hover .serv-num { color:rgba(212,175,55,.1); }
+
+/* ═══════════════════════════════ EXPERIENCE STRIP ═══════════════════════════════ */
+#experience {
+  padding:100px 24px;
+  background:linear-gradient(135deg,rgba(212,175,55,.04) 0%,transparent 50%);
+  border-top:1px solid var(--glass-border); border-bottom:1px solid var(--glass-border);
+  position:relative; overflow:hidden;
+}
+.exp-wrap { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.exp-left {}
+.exp-right { display:flex; flex-direction:column; gap:28px; }
+.exp-item { display:flex; gap:20px; align-items:flex-start; }
+.exp-bullet {
+  width:32px; height:32px; flex-shrink:0;
+  border:1px solid rgba(212,175,55,.25); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.6rem; color:var(--gold); font-weight:700;
+  margin-top:2px;
+}
+.exp-item-title { font-family:var(--elegant); font-size:1.05rem; color:var(--white-off); margin-bottom:6px; }
+.exp-item-desc { font-size:.78rem; color:rgba(255,255,255,.38); line-height:1.8; font-weight:300; }
+
+/* ═══════════════════════════════ TESTIMONIALS ═══════════════════════════════ */
+#testimonials { padding:130px 24px; overflow:hidden; }
+.testi-wrap { max-width:1200px; margin:0 auto; }
+.testi-header { text-align:center; margin-bottom:72px; }
+.testi-overflow { overflow:hidden; position:relative; }
+.testi-overflow::before,.testi-overflow::after {
+  content:''; position:absolute; top:0; bottom:0; width:120px; z-index:2; pointer-events:none;
+}
+.testi-overflow::before { left:0; background:linear-gradient(90deg,var(--black),transparent); }
+.testi-overflow::after { right:0; background:linear-gradient(-90deg,var(--black),transparent); }
+.testi-track { display:flex; gap:24px; animation:tTrack 32s linear infinite; width:max-content; }
+.testi-track:hover { animation-play-state:paused; }
+.testi-card {
+  width:400px; flex-shrink:0;
+  background:var(--glass); border:1px solid var(--glass-border); border-radius:2px;
+  padding:36px 32px; transition:all .35s; cursor:none;
+}
+.testi-card:hover { border-color:var(--glass-border-hover); transform:translateY(-6px); box-shadow:var(--glow-soft); }
+@keyframes tTrack { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.testi-stars { color:var(--gold); font-size:.85rem; letter-spacing:5px; margin-bottom:18px; }
+.testi-q { font-family:var(--serif); font-size:.95rem; font-style:italic; color:rgba(255,255,255,.6); line-height:1.9; margin-bottom:24px; font-weight:300; }
+.testi-author { display:flex; align-items:center; gap:14px; }
+.testi-av {
+  width:42px; height:42px; border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold-dim));
+  border:1px solid rgba(212,175,55,.25);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--elegant); font-size:.9rem; color:var(--gold);
+}
+.testi-n { font-size:.72rem; font-weight:700; letter-spacing:1px; color:var(--white-off); }
+.testi-r { font-size:.62rem; color:var(--gold); letter-spacing:1.5px; margin-top:2px; }
+
+/* ═══════════════════════════════ STATS ═══════════════════════════════ */
+#stats { padding:100px 24px; }
+.stats-wrap { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+.stat-blk {
+  text-align:center; padding:48px 32px;
+  border:1px solid var(--glass-border);
+  position:relative; overflow:hidden;
+  transition:border-color .4s;
+}
+.stat-blk:hover { border-color:rgba(212,175,55,.25); }
+.stat-blk::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 100%,rgba(212,175,55,.05),transparent 60%);
+  opacity:0; transition:opacity .4s;
+}
+.stat-blk:hover::before { opacity:1; }
+.stat-n { font-family:var(--display); font-size:clamp(3rem,5vw,4.5rem); letter-spacing:2px; color:var(--gold); line-height:1; filter:drop-shadow(0 0 15px rgba(212,175,55,.25)); }
+.stat-l { font-size:.58rem; letter-spacing:3.5px; text-transform:uppercase; color:rgba(255,255,255,.3); font-weight:600; margin-top:14px; }
+
+/* ═══════════════════════════════ CONTACT ═══════════════════════════════ */
+#contact { padding:130px 24px; }
+.contact-wrap { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1.1fr; gap:80px; align-items:start; }
+.contact-info { display:flex; flex-direction:column; gap:28px; }
+.contact-info p { font-size:.85rem; color:rgba(255,255,255,.4); line-height:2; font-weight:300; }
+.contact-detail { display:flex; gap:16px; align-items:flex-start; }
+.cd-icon {
+  width:40px; height:40px; flex-shrink:0;
+  border:1px solid var(--glass-border); border-radius:2px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.85rem; color:var(--gold); transition:all .3s;
+}
+.contact-detail:hover .cd-icon { border-color:var(--gold); box-shadow:var(--glow-soft); }
+.cd-label { font-size:.58rem; letter-spacing:3px; text-transform:uppercase; color:rgba(212,175,55,.6); font-weight:700; margin-bottom:4px; }
+.cd-val { font-size:.85rem; color:rgba(255,255,255,.6); }
+
+.contact-form { display:flex; flex-direction:column; gap:18px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.fgrp { display:flex; flex-direction:column; gap:8px; }
+.flbl { font-size:.55rem; letter-spacing:3.5px; text-transform:uppercase; color:rgba(212,175,55,.7); font-weight:700; }
+.finput,.ftextarea {
+  width:100%; background:rgba(212,175,55,.025); border:1px solid var(--glass-border);
+  border-radius:2px; padding:14px 18px; color:var(--white);
+  font-family:var(--body); font-size:.82rem; outline:none;
+  transition:all .3s;
+}
+.finput:focus,.ftextarea:focus { border-color:var(--gold); box-shadow:0 0 0 1px rgba(212,175,55,.15),var(--glow-soft); background:rgba(212,175,55,.04); }
+.ftextarea { resize:vertical; min-height:130px; }
+.fsubmit {
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-soft));
+  color:#000; border:none; padding:16px; border-radius:2px;
+  font-family:var(--body); font-size:.65rem; font-weight:700; letter-spacing:3.5px; text-transform:uppercase;
+  cursor:none; transition:all .3s; position:relative; overflow:hidden;
+}
+.fsubmit:hover { box-shadow:0 8px 32px rgba(212,175,55,.5); transform:translateY(-2px); }
+
+/* ═══════════════════════════════ FOOTER ═══════════════════════════════ */
+footer {
+  border-top:1px solid var(--glass-border); padding:80px 24px 40px; position:relative;
+}
+.footer-glow { position:absolute; top:0; left:50%; transform:translateX(-50%); width:40%; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); box-shadow:0 0 16px rgba(212,175,55,.4); }
+.footer-inner { max-width:1200px; margin:0 auto; }
+.footer-top { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:60px; margin-bottom:60px; }
+.footer-brand { font-family:var(--serif); font-weight:300; font-size:1.6rem; letter-spacing:10px; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.footer-tagline { font-family:var(--elegant); font-style:italic; font-size:.9rem; color:rgba(255,255,255,.25); margin-bottom:20px; letter-spacing:.5px; }
+.footer-desc { font-size:.75rem; color:rgba(255,255,255,.3); line-height:1.9; font-weight:300; max-width:280px; }
+.ft-title { font-size:.58rem; letter-spacing:4px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:22px; }
+.ft-links { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.ft-links a { color:rgba(255,255,255,.35); text-decoration:none; font-size:.78rem; font-weight:300; transition:color .3s; letter-spacing:.3px; }
+.ft-links a:hover { color:var(--gold); }
+.footer-bottom { border-top:1px solid rgba(212,175,55,.07); padding-top:36px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+.footer-copy { font-size:.65rem; color:rgba(255,255,255,.2); letter-spacing:1px; }
+.footer-socials { display:flex; gap:14px; }
+.soc-btn {
+  width:38px; height:38px; border-radius:2px; border:1px solid rgba(212,175,55,.15);
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,.3); text-decoration:none; font-size:.8rem; font-weight:700;
+  transition:all .3s;
+}
+.soc-btn:hover { border-color:var(--gold); color:var(--gold); box-shadow:var(--glow-soft); transform:translateY(-3px); }
+
+/* ═══════════════════════════════ RESPONSIVE ═══════════════════════════════ */
+@media(max-width:1024px) {
+  #about { grid-template-columns:1fr; gap:60px; }
+  .about-float-badge:nth-child(4) { left:0; }
+  .footer-top { grid-template-columns:1fr 1fr; }
+  .contact-wrap { grid-template-columns:1fr; }
+  .coll-grid { grid-template-columns:repeat(2,1fr); }
+  .coll-card.wide { grid-column:span 1; }
+  .exp-wrap { grid-template-columns:1fr; gap:48px; }
+}
+@media(max-width:768px) {
+  nav { padding:0 20px; width:calc(100% - 32px); }
+  .nav-links,.nav-actions { display:none; }
+  .hamburger { display:flex; }
+  #about { padding:80px 24px; }
+  .about-metrics { flex-wrap:wrap; gap:24px; }
+  .serv-grid { grid-template-columns:1fr; }
+  .stats-wrap { grid-template-columns:1fr 1fr; }
+  .footer-top { grid-template-columns:1fr; }
+  .footer-bottom { flex-direction:column; text-align:center; }
+  .form-row { grid-template-columns:1fr; }
+  .coll-grid { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:480px) {
+  .coll-grid { grid-template-columns:1fr; }
+  .hero-h1 { letter-spacing:3px; }
+  .stats-wrap { grid-template-columns:1fr 1fr; }
+  .about-float-badge { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="pCanvas"></canvas>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-logo">Trendline</div>
+  <div class="ld-sub">Dubai · Est. Fashion House</div>
+  <div class="ld-bar-wrap"><div class="ld-bar"></div></div>
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mMen">
+  <span class="m-close" onclick="closeMob()">✕</span>
+  <a href="#hero" onclick="closeMob()">Home</a>
+  <a href="#collections" onclick="closeMob()">Collections</a>
+  <a href="#services" onclick="closeMob()">Uniforms</a>
+  <a href="#about" onclick="closeMob()">About</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-brand">TREND<span>LINE</span></a>
+  <ul class="nav-links">
+    <li><a href="#collections">Collections</a></li>
+    <li><a href="#services">Uniforms</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="mailto:sales@trendydubai.ae" class="nav-btn">Wholesale</a>
+    <a href="#contact" class="nav-btn filled">Get Quote</a>
+  </div>
+  <div class="hamburger" id="ham" onclick="togMob()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section id="hero">
+  <div class="hero-film"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-shimmer">
+    <div class="shimmer-line"></div>
+    <div class="shimmer-line"></div>
+    <div class="shimmer-line"></div>
+  </div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-eye"></div>
+
+  <div class="hero-content">
+    <div class="hero-pretag">
+      <span class="hero-dot"></span>
+      Dubai's Premier Fashion House
+    </div>
+    <h1 class="hero-h1">
+      <span class="line1">Luxury</span>
+      <span class="line2">Fashion</span>
+      <span class="line3">Trend Line Garments Trading L.L.C. — Dubai, UAE</span>
+    </h1>
+    <p class="hero-sub">Where premium garments meet cinematic craftsmanship. From bespoke corporate uniforms to exclusive fashion collections — TRENDLINE defines Dubai's sartorial future.</p>
+    <div class="hero-ctas">
+      <a href="#collections" class="cta-primary">
+        Explore Collections
+        <span>→</span>
+      </a>
+      <a href="#contact" class="cta-secondary">
+        Request Wholesale
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-label">Scroll</div>
+    <div class="scroll-stem"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner" id="mq">
+    <span>Premium Fashion</span><span class="dot">✦</span>
+    <span>Corporate Uniforms</span><span class="dot">✦</span>
+    <span>Medical Wear</span><span class="dot">✦</span>
+    <span>School Uniforms</span><span class="dot">✦</span>
+    <span>Hospitality Wear</span><span class="dot">✦</span>
+    <span>Wholesale Garments</span><span class="dot">✦</span>
+    <span>Dubai Fashion</span><span class="dot">✦</span>
+    <span>Industrial Workwear</span><span class="dot">✦</span>
+    <span>Luxury Apparel</span><span class="dot">✦</span>
+    <span>Streetwear</span><span class="dot">✦</span>
+    <span>Premium Fashion</span><span class="dot">✦</span>
+    <span>Corporate Uniforms</span><span class="dot">✦</span>
+    <span>Medical Wear</span><span class="dot">✦</span>
+    <span>School Uniforms</span><span class="dot">✦</span>
+    <span>Hospitality Wear</span><span class="dot">✦</span>
+    <span>Wholesale Garments</span><span class="dot">✦</span>
+    <span>Dubai Fashion</span><span class="dot">✦</span>
+    <span>Industrial Workwear</span><span class="dot">✦</span>
+    <span>Luxury Apparel</span><span class="dot">✦</span>
+    <span>Streetwear</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- ═══════ ABOUT ═══════ -->
+<section id="about">
+  <div class="about-visual-wrap rv-left">
+    <div class="about-img-frame">
+      <div class="about-img-inner">
+        <!-- SVG fashion silhouette art -->
+        <svg class="about-fashion-svg" viewBox="0 0 200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 20 C85 20 75 30 70 45 L50 80 L30 90 L20 140 L50 145 L48 200 L52 200 L50 300 L80 300 L82 220 L100 215 L118 220 L120 300 L150 300 L148 200 L152 200 L150 145 L180 140 L170 90 L150 80 L130 45 C125 30 115 20 100 20Z" stroke="#D4AF37" stroke-width="0.8" fill="none"/>
+          <circle cx="100" cy="12" r="10" stroke="#D4AF37" stroke-width="0.8" fill="none"/>
+          <path d="M70 45 Q100 55 130 45" stroke="#D4AF37" stroke-width="0.5" fill="none"/>
+          <path d="M50 145 L150 145" stroke="#D4AF37" stroke-width="0.4" stroke-dasharray="4 4"/>
+          <path d="M48 200 L152 200" stroke="#D4AF37" stroke-width="0.4" stroke-dasharray="4 4"/>
+        </svg>
+        <div class="about-scan"></div>
+      </div>
+      <div class="about-frame-corner tl"></div>
+      <div class="about-frame-corner tr"></div>
+      <div class="about-frame-corner bl"></div>
+      <div class="about-frame-corner br"></div>
+    </div>
+    <div class="about-float-badge">
+      <div class="badge-num">15+</div>
+      <div class="badge-lbl">Years in Dubai</div>
+    </div>
+    <div class="about-float-badge">
+      <div class="badge-num">500+</div>
+      <div class="badge-lbl">Corporate Clients</div>
+    </div>
+  </div>
+  <div class="about-text rv-right">
+    <div class="sect-tag">Our Story</div>
+    <h2 class="sect-title"><em>Crafting</em> <strong>Dubai's Finest Fashion Legacy</strong></h2>
+    <p>Trend Line Garments Trading L.L.C. was born from a singular vision: to bring world-class fashion and precision-crafted garments to the heart of the UAE. From our Dubai headquarters, we serve elite retail clients, corporate enterprises, and wholesale distributors across the region.</p>
+    <p>Every stitch, every silhouette, every fabric choice reflects our unwavering commitment to luxury standards and modern sensibility. We don't just supply garments — we build brands, dress institutions, and outfit ambitions.</p>
+    <div class="about-metrics">
+      <div class="am"><div class="am-n" data-count="15">0</div><div class="am-l">Years Active</div></div>
+      <div class="am"><div class="am-n" data-count="500">0</div><div class="am-l">B2B Clients</div></div>
+      <div class="am"><div class="am-n" data-count="12">0</div><div class="am-l">Sectors Served</div></div>
+    </div>
+    <a href="#contact" class="cta-primary" style="width:fit-content">Start a Conversation →</a>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ═══════ COLLECTIONS ═══════ -->
+<section id="collections">
+  <div class="coll-header">
+    <div class="sect-tag center">Collections</div>
+    <h2 class="sect-title rv" style="text-align:center"><em>The</em> <strong>Full Trendline Universe</strong></h2>
+    <p class="rv" style="font-size:.82rem;color:rgba(255,255,255,.35);line-height:2;margin-top:16px;font-weight:300;">Ten meticulously crafted categories spanning every fashion need in the UAE and beyond.</p>
+  </div>
+  <div class="coll-grid">
+
+    <div class="coll-card wide rv" style="transition-delay:.05s">
+      <div class="coll-card-bg bg-mens">
+        <div class="coll-art">
+          <svg viewBox="0 0 300 200" width="80%" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M80 180 L80 80 L50 60 L80 40 L150 60 L220 40 L250 60 L220 80 L220 180Z" stroke="#D4AF37" stroke-width="0.8"/>
+            <path d="M80 80 L150 100 L220 80" stroke="#D4AF37" stroke-width="0.5" stroke-dasharray="6 4"/>
+            <line x1="150" y1="60" x2="150" y2="180" stroke="#D4AF37" stroke-width="0.4" stroke-dasharray="4 4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="coll-overlay"></div><div class="coll-glow"></div><div class="coll-border-anim"></div>
+      <div class="coll-info">
+        <div class="coll-cat">01 — Menswear</div>
+        <div class="coll-name">Men's Fashion & Formal</div>
+        <div class="coll-action">Explore Collection <span class="coll-action-arrow">→</span></div>
+      </div>
+    </div>
+
+    <div class="coll-card rv" style="transition-delay:.1s">
+      <div class="coll-card-bg bg-womens">
+        <div class="coll-art">
+          <svg viewBox="0 0 160 240" width="60%" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M80 20 C65 20 55 35 55 50 L40 80 L60 90 L50 220 L110 220 L100 90 L120 80 L105 50 C105 35 95 20 80 20Z" stroke="#D4AF37" stroke-width="0.8"/>
+            <circle cx="80" cy="12" r="8" stroke="#D4AF37" stroke-width="0.8" fill="none"/>
+            <path d="M60 90 C70 110 90 110 100 90" stroke="#D4AF37" stroke-width="0.4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="coll-overlay"></div><div class="coll-glow"></div><div class="coll-border-anim"></div>
+      <div class="coll-info">
+        <div class="coll-cat">02 — Womenswear</div>
+        <div class="coll-name">Women's Luxury Fashion</div>
+        <div class="coll-action">Explore Collection <span class="coll-action-arrow">→</span></div>
+      </div>
+    </div>
+
+    <div class="coll-card rv" style="transition-delay:.15s">
+      <div class="coll-card-bg bg-kids">
+        <div class="coll-art">
+          <svg viewBox="0 0 140 200" width="55%" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="70" cy="25" r="18" stroke="#D4AF37" stroke-width="0.8" fill="none"/>
+            <path d="M50 45 L30 70 L50 78 L46 170 L94 170 L90 78 L110 70 L90 45Z" stroke="#D4AF37" stroke-width="0.8"/>
+          </svg>
+        </div>
+      </div>
+      <div class="coll-overlay"></div><div class="coll-glow"></div><div class="coll-border-anim"></div>
+      <div class="coll-info">
+        <div class="coll-cat">03 — Kids</div>
+        <div class="coll-name">Children's Clothing</div>
+        <div class="coll-action">Explore Collection <span class="coll-action-arrow">→</span></div>
+      </div>
+    </div>
+
+    <div class="coll-card rv" style="transition-delay:.2s">
+      <div class="coll-card-bg bg-street">
+        <div class="coll-art">
+          <svg viewBox="0 0 160 200" width="65%" fill="none">
+            <rect x="30" y="40" width="100" height="130" rx="4" stroke="#D4AF37" stroke-width="0.8"/>
+            <path d="M30 80 L130 80" stroke="#D4AF37" stroke-width="0.4"/>
+            <path d="M80 40 L80 170" stroke="#D4AF37" stroke-width="0.4" stroke-dasharray="5 4"/>
+            <path d="M50 40 L30 20 L80 10 L130 20 L110 40" stroke="#D4AF37" stroke-width="0.8"/>
+          </svg>
+        </div>
+      </div>
+      <div class="coll-overlay"></div><div class="coll-glow"></div><div class="coll-border-anim"></div>
+      <div class="coll-info">
+        <div class="coll-cat">09 — Streetwear</div>
+        <div class="coll-name">Urban Street Collections</div>
+        <div class="coll-action">Explore Collection <span class="coll-action-arrow">→</span></div>
+      </div>
+    </div>
+
+    <div class="coll-card rv" style="transition-delay:.25s">
+      <div class="coll-card-bg bg-casual">
+        <div class="coll-art">
+          <svg viewBox="0 0 160 200" width="65%" fill="none">
+            <path d="M40 50 L120 50 L130 100 L110 100 L110 180 L50 180 L50 100 L30 100Z" stroke="#D4AF37" stroke-width="0.8"/>
+            <path d="M60 50 L60 30 C60 20 100 20 100 30 L100 50" stroke="#D4AF37" stroke-width="0.8"/>
+          </svg>
+        </div>
+      </div>
+      <div class="coll-overlay"></div><div class="coll-glow"></div><div class="coll-border-anim"></div>
+      <div class="coll-info">
+        <div class="coll-cat">10 — Casual</div>
+        <div class="coll-name">Premium Casualwear</div>
+        <div class="coll-action">Explore Collection <span class="coll-action-arrow">→</span></div>
+      </div>
+    </div>
+
+    <div class="coll-card wide rv" style="transition-delay:.3s">
+      <div class="coll-card-bg bg-corp">
+        <div class="coll-art">
+          <svg viewBox="0 0 300 180" width="80%" fill="none">
+            <rect x="20" y="20" width="260" height="140" rx="2" stroke="#D4AF37" stroke-width="0.6"/>
+            <path d="M80 20 L80 160" stroke="#D4AF37" stroke-width="0.4"/>
+            <path d="M220 20 L220 160" stroke="#D4AF37" stroke-width="0.4"/>
+            <path d="M20 90 L280 90" stroke="#D4AF37" stroke-width="0.4"/>
+            <circle cx="150" cy="90" r="30" stroke="#D4AF37" stroke-width="0.8"/>
+            <path d="M135 90 L145 100 L165 78" stroke="#D4AF37" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+      <div class="coll-overlay"></div><div class="coll-glow"></div><div class="coll-border-anim"></div>
+      <div class="coll-info">
+        <div class="coll-cat">04 — Corporate</div>
+        <div class="coll-name">Corporate Uniform Solutions</div>
+        <div class="coll-action">Request Bulk Quote <span class="coll-action-arrow">→</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ═══════ SERVICES / UNIFORMS ═══════ -->
+<section id="services">
+  <div class="serv-wrap">
+    <div class="serv-header">
+      <div class="sect-tag center">Uniform Division</div>
+      <h2 class="sect-title rv" style="text-align:center"><em>Professional</em> <strong>Uniform Solutions</strong></h2>
+      <p class="rv" style="font-size:.82rem;color:rgba(255,255,255,.35);line-height:2;margin-top:16px;font-weight:300;max-width:520px;margin-left:auto;margin-right:auto;">Precision-tailored uniforms for every institution and industry across the UAE.</p>
+    </div>
+    <div class="serv-grid">
+      <div class="serv-card rv" style="transition-delay:.05s">
+        <div class="serv-num">01</div>
+        <div class="serv-icon">🏢</div>
+        <div class="serv-title">Corporate Uniforms</div>
+        <div class="serv-desc">Branded uniforms for banks, real estate firms, airlines, and enterprise businesses. Premium fabrics, custom embroidery, bulk supply with fast turnaround.</div>
+      </div>
+      <div class="serv-card rv" style="transition-delay:.1s">
+        <div class="serv-num">02</div>
+        <div class="serv-icon">🏥</div>
+        <div class="serv-title">Medical Uniforms</div>
+        <div class="serv-desc">Hygienic, durable scrubs and clinical uniforms for hospitals, clinics, and healthcare institutions. Compliant with UAE health standards.</div>
+      </div>
+      <div class="serv-card rv" style="transition-delay:.15s">
+        <div class="serv-num">03</div>
+        <div class="serv-icon">🎓</div>
+        <div class="serv-title">School Uniforms</div>
+        <div class="serv-desc">Comfortable, regulation-compliant school uniforms for educational institutions. Durable construction built for active students.</div>
+      </div>
+      <div class="serv-card rv" style="transition-delay:.2s">
+        <div class="serv-num">04</div>
+        <div class="serv-icon">🏨</div>
+        <div class="serv-title">Hospitality Uniforms</div>
+        <div class="serv-desc">Luxury hotel uniforms, restaurant staff wear, and front-of-house attire that matches Dubai's five-star hospitality standards.</div>
+      </div>
+      <div class="serv-card rv" style="transition-delay:.25s">
+        <div class="serv-num">05</div>
+        <div class="serv-icon">⚙️</div>
+        <div class="serv-title">Industrial Workwear</div>
+        <div class="serv-desc">Safety-certified, high-visibility workwear for construction, oil & gas, logistics, and manufacturing sectors. Built for performance.</div>
+      </div>
+      <div class="serv-card rv" style="transition-delay:.3s">
+        <div class="serv-num">06</div>
+        <div class="serv-icon">📦</div>
+        <div class="serv-title">Wholesale Distribution</div>
+        <div class="serv-desc">B2B garment sourcing and distribution across the UAE and GCC. Volume pricing, custom labeling, and dedicated account management.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ═══════ EXPERIENCE ═══════ -->
+<section id="experience">
+  <div class="exp-wrap">
+    <div class="exp-left rv-left">
+      <div class="sect-tag">Why TRENDLINE</div>
+      <h2 class="sect-title"><em>The</em> <strong>Trendline Advantage</strong></h2>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.35);line-height:2;margin-top:20px;font-weight:300;max-width:440px;">Decades of expertise, premium materials, and a client-first philosophy position us as Dubai's most trusted fashion and garment partner.</p>
+    </div>
+    <div class="exp-right rv-right">
+      <div class="exp-item">
+        <div class="exp-bullet">01</div>
+        <div>
+          <div class="exp-item-title">Dubai-Based Operations</div>
+          <div class="exp-item-desc">Fully registered in the UAE (Trend Line Garments Trading L.L.C. - S.P.), with local expertise, fast delivery across Dubai and GCC.</div>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-bullet">02</div>
+        <div>
+          <div class="exp-item-title">Premium Material Sourcing</div>
+          <div class="exp-item-desc">We source fabrics from global luxury textile mills — European linens, performance technical fabrics, and sustainable organic materials.</div>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-bullet">03</div>
+        <div>
+          <div class="exp-item-title">Custom Branding & Embroidery</div>
+          <div class="exp-item-desc">Full corporate branding services including embroidered logos, screen printing, woven labels, and custom packaging for uniforms and retail.</div>
+        </div>
+      </div>
+      <div class="exp-item">
+        <div class="exp-bullet">04</div>
+        <div>
+          <div class="exp-item-title">Wholesale & Retail Supply Chain</div>
+          <div class="exp-item-desc">Scalable supply for B2B wholesale clients and premium retail customers alike. Minimum orders flexible — from 50 to 50,000 units.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ═══════ STATS ═══════ -->
+<section id="stats">
+  <div class="stats-wrap">
+    <div class="stat-blk rv">
+      <div class="stat-n" data-count="15">0</div>
+      <div class="stat-l">Years of Excellence</div>
+    </div>
+    <div class="stat-blk rv" style="transition-delay:.1s">
+      <div class="stat-n" data-count="500">0</div>
+      <div class="stat-l">Corporate Clients</div>
+    </div>
+    <div class="stat-blk rv" style="transition-delay:.2s">
+      <div class="stat-n" data-count="12">0</div>
+      <div class="stat-l">Industry Sectors</div>
+    </div>
+    <div class="stat-blk rv" style="transition-delay:.3s">
+      <div class="stat-n" data-count="50">0</div>
+      <div class="stat-l">K+ Items Monthly</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ═══════ TESTIMONIALS ═══════ -->
+<section id="testimonials">
+  <div class="testi-wrap">
+    <div class="testi-header">
+      <div class="sect-tag center">Client Reviews</div>
+      <h2 class="sect-title rv" style="text-align:center"><em>Voices of</em> <strong>Our Partners</strong></h2>
+    </div>
+  </div>
+  <div class="testi-overflow">
+    <div class="testi-track">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"TRENDLINE supplied our entire hotel staff uniform line — 800 pieces — and the quality was extraordinary. Every guest has complimented the team's appearance."</div>
+        <div class="testi-author">
+          <div class="testi-av">AH</div>
+          <div><div class="testi-n">Ahmed Al Hashimi</div><div class="testi-r">GM — Luxury Hotel Group, Dubai</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"As a school administrator, finding a reliable uniform supplier in Dubai was challenging. TRENDLINE delivered on time, within budget, and the parents love the quality."</div>
+        <div class="testi-author">
+          <div class="testi-av">SM</div>
+          <div><div class="testi-n">Sara Mahmood</div><div class="testi-r">Principal — International School, Jumeirah</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"We've sourced wholesale garments from suppliers across Asia. TRENDLINE's combination of UAE-based service, premium fabrics, and competitive pricing is unmatched."</div>
+        <div class="testi-author">
+          <div class="testi-av">KP</div>
+          <div><div class="testi-n">Khalid Al Farsi</div><div class="testi-r">Director — Retail Group, Abu Dhabi</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"Their corporate uniform service is exceptional. Custom embroidery, perfect fit sizing, and they handled our 1,200-employee rollout without a single issue."</div>
+        <div class="testi-author">
+          <div class="testi-av">NR</div>
+          <div><div class="testi-n">Nadia Rahman</div><div class="testi-r">HR Director — Financial Services, DIFC</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"We needed medical scrubs for a 300-person clinic launch. TRENDLINE turned around the order in 2 weeks with custom branding. Flawless execution under pressure."</div>
+        <div class="testi-author">
+          <div class="testi-av">FO</div>
+          <div><div class="testi-n">Dr. Fatima Omar</div><div class="testi-r">Operations Head — Medical Group, Dubai</div></div>
+        </div>
+      </div>
+      <!-- Duplicate for loop -->
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"TRENDLINE supplied our entire hotel staff uniform line — 800 pieces — and the quality was extraordinary. Every guest has complimented the team's appearance."</div>
+        <div class="testi-author">
+          <div class="testi-av">AH</div>
+          <div><div class="testi-n">Ahmed Al Hashimi</div><div class="testi-r">GM — Luxury Hotel Group, Dubai</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"As a school administrator, finding a reliable uniform supplier in Dubai was challenging. TRENDLINE delivered on time, within budget, and the parents love the quality."</div>
+        <div class="testi-author">
+          <div class="testi-av">SM</div>
+          <div><div class="testi-n">Sara Mahmood</div><div class="testi-r">Principal — International School, Jumeirah</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"We've sourced wholesale garments from suppliers across Asia. TRENDLINE's combination of UAE-based service, premium fabrics, and competitive pricing is unmatched."</div>
+        <div class="testi-author">
+          <div class="testi-av">KP</div>
+          <div><div class="testi-n">Khalid Al Farsi</div><div class="testi-r">Director — Retail Group, Abu Dhabi</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"Their corporate uniform service is exceptional. Custom embroidery, perfect fit sizing, and they handled our 1,200-employee rollout without a single issue."</div>
+        <div class="testi-author">
+          <div class="testi-av">NR</div>
+          <div><div class="testi-n">Nadia Rahman</div><div class="testi-r">HR Director — Financial Services, DIFC</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-q">"We needed medical scrubs for a 300-person clinic launch. TRENDLINE turned around the order in 2 weeks with custom branding. Flawless execution under pressure."</div>
+        <div class="testi-author">
+          <div class="testi-av">FO</div>
+          <div><div class="testi-n">Dr. Fatima Omar</div><div class="testi-r">Operations Head — Medical Group, Dubai</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- ═══════ CONTACT ═══════ -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-info rv-left">
+      <div class="sect-tag">Get in Touch</div>
+      <h2 class="sect-title"><em>Start Your</em> <strong>Fashion Journey</strong></h2>
+      <p>Whether you're a retailer, a corporate buyer, or an institution seeking uniform solutions — our team is ready to craft the perfect garment strategy for you.</p>
+
+      <div class="contact-detail">
+        <div class="cd-icon">📞</div>
+        <div><div class="cd-label">Phone</div><div class="cd-val">+971 4 347 5960</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">✉️</div>
+        <div>
+          <div class="cd-label">General Enquiries</div>
+          <div class="cd-val">info@trendydubai.ae</div>
+          <div class="cd-label" style="margin-top:8px">Sales & Wholesale</div>
+          <div class="cd-val">sales@trendydubai.ae</div>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">🕐</div>
+        <div><div class="cd-label">Business Hours</div><div class="cd-val">9:00 AM – 6:00 PM (UAE Time)</div></div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">📍</div>
+        <div><div class="cd-label">Location</div><div class="cd-val">Dubai, United Arab Emirates</div></div>
+      </div>
+    </div>
+    <div class="rv-right">
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="fgrp">
+            <label class="flbl">Full Name</label>
+            <input type="text" class="finput" placeholder="Your name">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Company</label>
+            <input type="text" class="finput" placeholder="Your company">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="fgrp">
+            <label class="flbl">Email</label>
+            <input type="email" class="finput" placeholder="your@email.com">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Phone</label>
+            <input type="tel" class="finput" placeholder="+971 ...">
+          </div>
+        </div>
+        <div class="fgrp">
+          <label class="flbl">Service Required</label>
+          <input type="text" class="finput" placeholder="e.g. Corporate Uniforms, Wholesale, Retail...">
+        </div>
+        <div class="fgrp">
+          <label class="flbl">Message</label>
+          <textarea class="ftextarea" placeholder="Tell us about your requirements, quantities, and timeline..."></textarea>
+        </div>
+        <button class="fsubmit">Send Enquiry →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <div class="footer-glow"></div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">TRENDLINE</div>
+        <div class="footer-tagline">Where Luxury Meets Fashion</div>
+        <div class="footer-desc">Trend Line Garments Trading L.L.C. - S.P.<br>Dubai, United Arab Emirates<br><br>Premium fashion, wholesale garments, and precision uniform solutions for discerning clients across the UAE and GCC.</div>
+      </div>
+      <div>
+        <div class="ft-title">Collections</div>
+        <ul class="ft-links">
+          <li><a href="#collections">Men's Fashion</a></li>
+          <li><a href="#collections">Women's Fashion</a></li>
+          <li><a href="#collections">Children's Wear</a></li>
+          <li><a href="#collections">Streetwear</a></li>
+          <li><a href="#collections">Casualwear</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ft-title">Uniforms</div>
+        <ul class="ft-links">
+          <li><a href="#services">Corporate</a></li>
+          <li><a href="#services">Medical</a></li>
+          <li><a href="#services">School</a></li>
+          <li><a href="#services">Hospitality</a></li>
+          <li><a href="#services">Industrial</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ft-title">Contact</div>
+        <ul class="ft-links">
+          <li><a href="tel:+97143475960">+971 4 347 5960</a></li>
+          <li><a href="mailto:info@trendydubai.ae">info@trendydubai.ae</a></li>
+          <li><a href="mailto:sales@trendydubai.ae">sales@trendydubai.ae</a></li>
+          <li><a href="#">Dubai, UAE</a></li>
+          <li><a href="#">9AM – 6PM UAE</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Trend Line Garments Trading L.L.C. – S.P. All rights reserved. Dubai, UAE.</div>
+      <div class="footer-socials">
+        <a href="#" class="soc-btn">in</a>
+        <a href="#" class="soc-btn">𝕏</a>
+        <a href="#" class="soc-btn">f</a>
+        <a href="#" class="soc-btn">📷</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+/* ─── LOADER ─── */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{ document.getElementById('loader').classList.add('gone'); initParticles(); },2700);
+});
+
+/* ─── CURSOR ─── */
+const cur=document.getElementById('cur'), curRing=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+});
+(function rafRing(){
+  rx+=(mx-rx)*.11; ry+=(my-ry)*.11;
+  curRing.style.left=rx+'px'; curRing.style.top=ry+'px';
+  requestAnimationFrame(rafRing);
+})();
+document.querySelectorAll('a,button,.coll-card,.serv-card,.testi-card,.nav-btn,.cta-primary,.cta-secondary').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+/* ─── NAVBAR ─── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('dense',window.scrollY>80);
+});
+
+/* ─── MOBILE MENU ─── */
+let mob=false;
+function togMob(){ mob=!mob; document.getElementById('mMen').classList.toggle('show',mob); }
+function closeMob(){ mob=false; document.getElementById('mMen').classList.remove('show'); }
+
+/* ─── SCROLL REVEAL ─── */
+const rvObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); rvObs.unobserve(e.target); } });
+},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.rv,.rv-left,.rv-right').forEach(el=>rvObs.observe(el));
+
+/* ─── COUNTERS ─── */
+function doCount(el,end,dur=1800){
+  const isFloat=String(end).includes('.');
+  const num=parseFloat(end);
+  const t0=performance.now();
+  const run=now=>{
+    const p=Math.min((now-t0)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=isFloat?(num*ease).toFixed(1):Math.round(num*ease);
+    if(p<1)requestAnimationFrame(run); else el.textContent=end;
+  };
+  requestAnimationFrame(run);
+}
+const cntObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      doCount(e.target,e.target.dataset.count);
+      cntObs.unobserve(e.target);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cntObs.observe(el));
+
+/* ─── PARTICLES ─── */
+function initParticles(){
+  const canvas=document.getElementById('pCanvas');
+  const ctx=canvas.getContext('2d');
+  let P=[];
+  const resize=()=>{canvas.width=innerWidth;canvas.height=innerHeight;};
+  resize(); window.addEventListener('resize',resize);
+
+  class Pt{
+    constructor(){this.reset(true);}
+    reset(rand){
+      this.x=Math.random()*canvas.width;
+      this.y=rand?Math.random()*canvas.height:canvas.height+5;
+      this.r=Math.random()*1.2+.2;
+      this.vy=-(Math.random()*.35+.08);
+      this.vx=(Math.random()-.5)*.2;
+      this.a=Math.random()*.5+.1;
+      this.life=1;
+      this.decay=Math.random()*.002+.0006;
+      const golds=[[212,175,55],[184,134,11],[255,215,0],[255,204,102]];
+      this.c=golds[Math.floor(Math.random()*golds.length)];
+    }
+    tick(){
+      this.x+=this.vx; this.y+=this.vy; this.life-=this.decay;
+      if(this.life<=0||this.y<-5) this.reset(false);
+    }
+    draw(){
+      ctx.save();
+      ctx.globalAlpha=this.life*this.a;
+      ctx.fillStyle=`rgba(${this.c[0]},${this.c[1]},${this.c[2]},1)`;
+      ctx.shadowColor=`rgba(${this.c[0]},${this.c[1]},${this.c[2]},.7)`;
+      ctx.shadowBlur=5;
+      ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  for(let i=0;i<120;i++) P.push(new Pt());
+
+  (function frame(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    P.forEach(p=>{p.tick();p.draw();});
+    requestAnimationFrame(frame);
+  })();
+}
+</script>
+</body>
+</html>
